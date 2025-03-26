@@ -1,2 +1,10 @@
-mediapipe==0.8.9.1
+mediapipe==0.10.13
 opencv-python
+fastapi
+uvicorn
+pydantic
+python-multipart
+opencv-python
+mediapipe
+numpy
+pymongo

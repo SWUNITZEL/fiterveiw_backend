@@ -7,7 +7,7 @@ from fastapi import WebSocket
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.responses import JSONResponse
 import os
-from app import video_analysis, database
+from app import analysis, database
 
 app = FastAPI()
 
@@ -89,7 +89,7 @@ async def upload_file(video: UploadFile = File(...), img: UploadFile = File(...)
 
     # 비디오 분석 수행
     try:
-        result = video_analysis()
+        result = analysis()
         return JSONResponse(content={"message": "성공!", "result": result}, status_code=200)
     except Exception as e:
         # 에러 발생 시 메시지 반환
