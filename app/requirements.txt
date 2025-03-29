@@ -1,10 +1,12 @@
 mediapipe==0.10.13
 opencv-python
 fastapi
-uvicorn
+uvicorn[standard]
 pydantic
 python-multipart
 opencv-python
 mediapipe
 numpy
 pymongo
+websockets
+motor
