@@ -11,10 +11,9 @@ from app import analysis, database
 
 app = FastAPI()
 
-
 #MongoDB 클라이언트 생성
-client = database.create_mongo_client()
-db = database.get_database(client, "test_db") # test_db 데이터베이스 선택
+client = database.client
+db = database.database
 collection = db['test_collection'] # test_collection 컬렉션 선택
 
 # 데이터 모델
@@ -22,17 +21,16 @@ class Document(BaseModel):
     name: str
     age: int
 
-
 @app.post("/test/insert")
 async def insert_db(document: Document):
     # Pydantic 모델을 dict로 변환
-    doc_dict = document.dict()
-    database.insert_document(collection, doc_dict)
-    return {"result":"ok"}
+    doc_dict = document.model_dump()
+    await database.insert_document(collection, doc_dict)
+    return {"result": "ok"}
 
 @app.get("/test/select/{name}", response_model=Document)
 async def get_db(name: str):
-    document = database.find_document(collection, {"name":name})
+    document = await database.find_document(collection, {"name":name})
     if document is None:
         raise HTTPException(status_code=404, detail="Documnet not found")
     return Document(name=document['name'], age=document['age'])
