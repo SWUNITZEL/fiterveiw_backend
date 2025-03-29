@@ -1,25 +1,26 @@
-from pymongo import MongoClient
 import json
+from motor.motor_asyncio import AsyncIOMotorClient
+from app.config.config import settings
 
 # MongoDB 연결 설정
-client = MongoClient('mongodb://localhost:27017/')
-db = client['test_db']
-reports_collection = db['analysis_reports']
-contents_collection = db['report_contents']
+client = AsyncIOMotorClient(settings.MONGO_DB_URL)
+database = client[settings.MONGO_DB_NAME]
 
-
+# 컬렉션 가져오기
+reports_collection = database['analysis_reports']
+contents_collection = database['report_contents']
 
 # 문서 삽입
-def insert_document(collection, document):
-    collection.insert_one(document);
+async def insert_document(collection, document):
+    await collection.insert_one(document)
 
 # 문서 검색
-def find_document(collection, query):
-    document = collection.find_one(query)
+async def find_document(collection, query):
+    document = await collection.find_one(query)
     return document
 
 
-def update_video_analysis(video_json, q_num):
+async def update_video_analysis(video_json, q_num):
     try:
 
         latest_report = reports_collection.find().sort("rep_idx", -1).limit(1)
@@ -55,7 +56,7 @@ update_video_analysis(video_json, q_num)
 
 
 # DB 작업 후 연결 종료
-def close_connection():
+async def close_connection():
     client.close()
     print("MongoDB 접속 종료")
 
